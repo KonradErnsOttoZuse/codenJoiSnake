@@ -21,20 +21,16 @@ public class PathMaker {
     }
 
     public static Optional<Path> goToPoint(Board board, Point point) {
-        System.out.println("Запущен метод goToPoint - движение к целевой точке по прямой");
         PathPoint from;
         PathPoint to;
 
         //Отримуємо координати цільового поінта
         to = new PathPoint(point);
-        System.out.println("TargetPoint: " + to);
 
         //Отримуємо координати голови змії
         if (board.getHead() != null) {
             from = new PathPoint(board.getHead(), board.getSnakeDirection());
-            System.out.println("Snake head: " + from);
         } else {
-            System.out.println("Snake head coordinates out of range");
             return Optional.empty();
         }
 
@@ -78,12 +74,8 @@ public class PathMaker {
     }
 
     private static Optional<Path> getHamiltonPath(Area area, PathPoint startPoint, Direction streamDirection) {
-        System.out.println("Inside goByHamilton method");
         HamiltonService hs = HamiltonService.getInstance(area, startPoint, streamDirection);
         while (hs.getPath().size() < hs.getArea().getSizeX() * hs.getArea().getSizeY()) {
-            System.out.printf("ps.getPath().size() - %d < SizeX() - %d * SizeY() - %d\n", hs.getPath().size(), hs.getArea().getSizeX(), hs.getArea().getSizeY());
-            System.out.println("area = " + area);
-            System.out.println(hs.getPath());
             hs.moveR();
             hs.turn();
             if (hs.getArea().getSizeX() != 2 && hs.getArea().getSizeY() != 2)
@@ -97,21 +89,21 @@ public class PathMaker {
         return op;
     }
 
-    public static Optional<Path> goByReverseHamilton(Board board, Path path) {
+    public static Optional<Path> goByReverseHamilton(Path path) {
         Direction streamDirection = path.get(0).getWay().inverted();
 
-        int maxIndX = path.get(0).getX();
-        int maxIndY = path.get(0).getY();
-        int minIndX = path.get(0).getX();
-        int minIndY = path.get(0).getY();
+        int maxX = path.get(0).getX();
+        int maxY = path.get(0).getY();
+        int minX = path.get(0).getX();
+        int minY = path.get(0).getY();
         for (Point p : path.getPath()
         ) {
-            if (p.getX() > maxIndX) maxIndX = p.getX();
-            if (p.getY() > maxIndY) maxIndY = p.getY();
-            if (p.getX() < minIndX) minIndX = p.getX();
-            if (p.getY() < minIndY) minIndY = p.getY();
+            if (p.getX() > maxX) maxX = p.getX();
+            if (p.getY() > maxY) maxY = p.getY();
+            if (p.getX() < minX) minX = p.getX();
+            if (p.getY() < minY) minY = p.getY();
         }
-        Area area = new Area(new PointImpl(minIndX, minIndY), new PointImpl(maxIndX, maxIndY));
+        Area area = new Area(new PointImpl(minX, minY), new PointImpl(maxX, maxY));
         PathPoint startPoint = new PathPoint(area.getFinish().getX(), area.getStart().getY(), streamDirection);
 
         return getHamiltonPath(area, startPoint, streamDirection);
