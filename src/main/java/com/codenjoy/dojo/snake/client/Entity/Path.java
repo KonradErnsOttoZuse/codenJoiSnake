@@ -3,7 +3,7 @@ package com.codenjoy.dojo.snake.client.Entity;
 import java.util.LinkedList;
 
 public class Path {
-    private LinkedList<PathPoint> path;
+    private final LinkedList<PathPoint> path;
 
     private Path() {
         this.path = new LinkedList<>();
@@ -32,15 +32,6 @@ public class Path {
     public int indexOf(PathPoint point) {
         return path.indexOf(point);
     }
-
-    public void reverse() {
-        LinkedList<PathPoint> tmp = new LinkedList<>();
-        for (int i = path.size() - 1; i > 0; i--) {
-            tmp.add(path.get(i));
-        }
-        path = tmp;
-    }
-
 
     public boolean contains(PathPoint point) {
         return path.contains(point);

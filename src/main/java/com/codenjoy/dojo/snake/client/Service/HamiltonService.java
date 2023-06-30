@@ -60,7 +60,6 @@ public class HamiltonService {
     }
 
     public boolean checkCollision(PathPoint point) {
-//        System.out.println("checkCollision(), checking point: " + point);
         //проверка на границу области
         return point.getX() >= area.getStart().getX() &&
                 point.getX() <= area.getFinish().getX() &&

@@ -51,8 +51,7 @@ public class AreaService {
 
         if (y2 == box.getSizeY()) {
             y = y0;
-        }
-        else if (y1 < CROSSROAD) {
+        } else if (y1 < CROSSROAD) {
             for (int i = y0; i <= y2; i += box.getSizeY()) {
                 if (i <= y1) {
                     y = i;
@@ -68,8 +67,7 @@ public class AreaService {
 
         if (x2 == box.getSizeX()) {
             x = x0;
-        }
-        else if (x1 < CROSSROAD) {
+        } else if (x1 < CROSSROAD) {
             for (int i = x0; i <= x2; i += box.getSizeX()) {
                 if (i <= x1) {
                     x = i;
@@ -82,14 +80,11 @@ public class AreaService {
                 }
             }
         }
-        System.out.println("Найдена точка привязки: " + new PointImpl(x, y));
         box.setStartPoint(new PointImpl(x, y));
-        System.out.println("Сформирован бокс: " + box);
         return Optional.of(box);
     }
 
     public static Point getCloserPointOfArea(Area area, Point point) {
-        System.out.println("Запущен метод getCloserPointOfArea");
         List<Point> allPoints = area.getAllPoints();
         Point minPoint = allPoints.get(0);
         Point tmpPoint;
@@ -100,7 +95,6 @@ public class AreaService {
             tmpDistance = tmpPoint.distance(point);
             if (tmpDistance < minDistance) minPoint = tmpPoint;
         }
-        System.out.println("Найдена ближайшая точка: " + minPoint);
         return minPoint;
     }
 

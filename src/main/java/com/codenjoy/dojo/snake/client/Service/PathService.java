@@ -11,13 +11,10 @@ import com.codenjoy.dojo.snake.client.Entity.PathPoint;
 import java.util.Optional;
 
 public class PathService {
-    private Path path;
+    private final Path path;
     private PathPoint curr;
-    private PathPoint from;
-    private PathPoint to;
-
-//    private int sizeX = 15;
-//    private int sizeY = 15;
+    private final PathPoint from;
+    private final PathPoint to;
 
     Board board;
     Area area = new Area(new PointImpl(0, 0), new PointImpl(14, 14));
@@ -61,16 +58,10 @@ public class PathService {
     }
 
     public boolean setPathPoint(Direction d) {
-//        System.out.println("Метод setPathPoint(), direction - " + d);
-//        System.out.println("Метод setPathPoint(), curr - " + curr);
-
         PathPoint next = new PathPoint(d.changeX(curr.getX()), d.changeY(curr.getY()), d);
-//        System.out.println("Метод setPathPoint(), next PathPoint - " + next);
         if (checkCollision(next)) {
-//            System.out.println("collision hasn't found, point " + next + " added to path,");
             path.add(next);
             curr = next;
-//            System.out.println("Path: " + path);
             return true;
         }
         return false;
@@ -112,38 +103,6 @@ public class PathService {
         return Math.abs(x2 - x1) < Math.abs(y2 - y1);
     }
 
-
-    public static Optional<Direction> pathSync(Path path, PathPoint point) {
-        Optional<Direction> od;
-        int index = path.indexOf(point);
-        int indexNext = index + 1 < path.size() ? index + 1 : 0;
-        Direction nextWay = path.get(indexNext).getWay();
-        Direction currWay = point.getWay();
-        //текущее направление движения совпадает с направлением следующего шага пути ?
-        if (currWay.equals(nextWay)) {
-            return od = Optional.of(currWay);
-        }
-
-        //получаем направление после поворота направо
-        Direction turnRight = point.getWay().clockwise();
-        //получаем направление после поворота налево
-        Direction turnLeft = point.getWay().clockwise().inverted();
-        PathPoint nextPointR = new PathPoint(turnRight.changeX(point.getX()), turnRight.changeY(point.getY()), turnRight);
-        PathPoint nextPointL = new PathPoint(turnLeft.changeX(point.getX()), turnLeft.changeY(point.getY()), turnLeft);
-        if (path.contains(nextPointR) && path.get(path.indexOf(nextPointR)).getWay().equals(turnRight)) {
-            return od = Optional.of(turnRight);
-        }
-        if (path.contains(nextPointL) && path.get(path.indexOf(nextPointL)).getWay().equals(turnLeft)) {
-            return od = Optional.of(turnLeft);
-        }
-        return Optional.empty();
-    }
-
-//    public void setPath(Path path) {
-//        this.path = path;
-//    }
-
-
     public Optional<Direction> getTargetDirection(Point to, Point from) {
         int dx = getDx(to, from);
         int dy = getDy(to, from);
@@ -167,12 +126,8 @@ public class PathService {
         return Optional.empty();
     }
 
-    public static int getDx(Point to, Point from) {
-        return Integer.compare(to.getX() - from.getX(), 0);
-    }
-
-    public static int getDy(Point to, Point from) {
-        return Integer.compare(to.getY() - from.getY(), 0);
+    public Point getFrom() {
+        return from;
     }
 
     public boolean nextStep(Direction needed) {
@@ -189,6 +144,40 @@ public class PathService {
         return false;
     }
 
+    public static Optional<Direction> pathSync(Path path, PathPoint point) {
+        Optional<Direction> od;
+        int index = path.indexOf(point);
+        int indexNext = index + 1 < path.size() ? index + 1 : 0;
+        Direction nextWay = path.get(indexNext).getWay();
+        Direction currWay = point.getWay();
+        //текущее направление движения совпадает с направлением следующего шага пути ?
+        if (currWay.equals(nextWay)) {
+            return Optional.of(currWay);
+        }
+
+        //получаем направление после поворота направо
+        Direction turnRight = point.getWay().clockwise();
+        //получаем направление после поворота налево
+        Direction turnLeft = point.getWay().clockwise().inverted();
+        PathPoint nextPointR = new PathPoint(turnRight.changeX(point.getX()), turnRight.changeY(point.getY()), turnRight);
+        PathPoint nextPointL = new PathPoint(turnLeft.changeX(point.getX()), turnLeft.changeY(point.getY()), turnLeft);
+        if (path.contains(nextPointR) && path.get(path.indexOf(nextPointR)).getWay().equals(turnRight)) {
+            return Optional.of(turnRight);
+        }
+        if (path.contains(nextPointL) && path.get(path.indexOf(nextPointL)).getWay().equals(turnLeft)) {
+            return Optional.of(turnLeft);
+        }
+        return Optional.empty();
+    }
+
+    public static int getDx(Point to, Point from) {
+        return Integer.compare(to.getX() - from.getX(), 0);
+    }
+
+    public static int getDy(Point to, Point from) {
+        return Integer.compare(to.getY() - from.getY(), 0);
+    }
+
     public static boolean isPointInArea(Area area, Point point) {
         return area.getStart().getX() <= point.getX() &&
                 area.getStart().getY() <= point.getY() &&
@@ -196,7 +185,4 @@ public class PathService {
                 area.getFinish().getX() >= point.getX();
     }
 
-    public Point getFrom() {
-        return from;
-    }
 }
